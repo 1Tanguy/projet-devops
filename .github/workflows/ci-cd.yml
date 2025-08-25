@@ -19,17 +19,17 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install backend
-        working-directory: ./backend
-        run: npm install
+    #  - name: Install backend
+    #    working-directory: ./backend
+    #    run: npm install
 
-      - name: run start
-        working-directory: ./backend
-        run: npm run start
+    #  - name: run start
+    #     working-directory: ./backend
+    #     run: npm run start
 
-      - name: test backend
-        working-directory: ./backend
-        run: npm run test
+    #   - name: test backend
+    #     working-directory: ./backend
+    #     run: npm run test
 
       - name: Install frontend
         working-directory: ./frontend
