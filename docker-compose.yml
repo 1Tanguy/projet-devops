@@ -12,7 +12,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./projet_devops_backend/scriptSQL.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/scriptSQL.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - todolist-network
     healthcheck:
@@ -25,7 +25,7 @@ services:
   # Backend API
   backend:
     build:
-      context: ./projet_devops_backend
+      context: ./backend
       dockerfile: Dockerfile
     container_name: backend_api
     ports:
@@ -48,7 +48,7 @@ services:
   # Frontend
   frontend:
     build:
-      context: ./projet_devops_frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: frontend_app
     ports:
