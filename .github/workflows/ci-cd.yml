@@ -35,13 +35,13 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
-      - name: start server
-        working-directory: ./frontend
-        run: ng serve
+    #   - name: start server
+    #     working-directory: ./frontend
+    #     run: ng serve
 
       - name: test fronted
         working-directory: ./frontend
-        run: ng test
+        run: npm run test
 
       - name: Install dependencies
         run: npm install
