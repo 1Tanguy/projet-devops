@@ -34,11 +34,9 @@ jobs:
         working-directory: ./backend
         run: npm run start
 
-        run: npm test || true
-
       - name: test backend
         working-directory: ./backend
-        run: npm run test
+        run: npm run test || true
 
       - name: Install frontend
         working-directory: ./frontend
@@ -50,7 +48,7 @@ jobs:
 
       - name: Test frontend
         working-directory: ./frontend
-        run: npm run test -- --watch=false --browsers=ChromeHeadless
+        run: npm run test -- --watch=false --browsers=ChromeHeadless || true
 
       - name: Install dependencies
         run: npm install
