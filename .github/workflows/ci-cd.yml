@@ -19,6 +19,12 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install MySQL
+        run: sudo apt-get update && sudo apt-get install -y mysql-server
+
+      - name: Start MySQL
+        run: sudo service mysql start
+          
       - name: Install backend
         working-directory: ./backend
         run: npm install
