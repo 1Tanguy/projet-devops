@@ -24,7 +24,17 @@ jobs:
 
       - name: Start MySQL
         run: sudo service mysql start
-          
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h "localhost" --silent; then
+              exit 0
+            fi
+            sleep 1
+          done
+          exit 1     
+             
       - name: Install backend
         working-directory: ./backend
         run: npm install
