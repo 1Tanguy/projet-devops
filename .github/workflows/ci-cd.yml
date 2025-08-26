@@ -34,7 +34,7 @@ jobs:
         working-directory: ./backend
         run: npm run start
         continue-on-error: true
-        
+
       - name: test backend
         working-directory: ./backend
         run: npm run test
@@ -47,17 +47,12 @@ jobs:
       - name: start server
         working-directory: ./frontend
         run: ng serve
+        continue-on-error: true
 
       - name: Test frontend
         working-directory: ./frontend
         run: npm run test -- --watch=false --browsers=ChromeHeadless
         continue-on-error: true
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
 
   build-and-push:
     name: Build & Push Images
