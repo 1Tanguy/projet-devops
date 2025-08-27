@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: projet-eni
+  name: todolist-config
+data:
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_NAME: todolist
+  MYSQL_DATABASE: todolist
