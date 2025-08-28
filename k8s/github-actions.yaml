@@ -1,0 +1,67 @@
+---
+# Docker Registry Secret for GitHub Actions to pull images
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-registry-secret
+  namespace: projet-eni
+type: kubernetes.io/dockerconfigjson
+data:
+  # Generate the base64 encoded docker config with:
+  # kubectl create secret docker-registry docker-registry-secret \
+  #   --docker-server=https://index.docker.io/v1/ \
+  #   --docker-username=USERNAME \
+  #   --docker-password= PASSWORD\
+  #   --docker-email=MAIL \
+  #   --dry-run=client -o yaml
+  # 
+  # Or get from existing secret:
+  # kubectl get secret docker-registry-secret -n projet-eni -o jsonpath='{.data.\.dockerconfigjson}'
+  .dockerconfigjson: REPLACE_WITH_YOUR_BASE64_ENCODED_DOCKER_CONFIG
+
+---
+# Service Account for GitHub Actions
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: github-actions-sa
+  namespace: projet-eni
+---
+# Secret for Service Account Token
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-actions-sa-token
+  namespace: projet-eni
+  annotations:
+    kubernetes.io/service-account.name: github-actions-sa
+type: kubernetes.io/service-account-token
+---
+# Role with deployment permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: github-actions-deployer
+  namespace: projet-eni
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "patch", "update"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+---
+# RoleBinding to bind the Role to the Service Account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: github-actions-deployer-binding
+  namespace: projet-eni
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: github-actions-deployer
+subjects:
+- kind: ServiceAccount
+  name: github-actions-sa
+  namespace: projet-eni
