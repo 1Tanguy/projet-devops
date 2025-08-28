@@ -21,12 +21,6 @@ provider "azurerm" {
   features {}
 }
 
-# Suffixe aléatoire pour noms uniques
-resource "random_string" "suffix" {
-  length  = 4
-  upper   = false
-  special = false
-}
 
 # Resource Group existant
 data "azurerm_resource_group" "rg" {
@@ -37,7 +31,7 @@ data "azurerm_resource_group" "rg" {
 # Réseau : VNet + Subnet
 # ---------------------
 resource "azurerm_virtual_network" "aks_vnet" {
-  name                = "${var.project}-vnet-${random_string.suffix.result}"
+  name                = "${var.project}-vnet"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   address_space       = [var.vnet_cidr]
@@ -59,10 +53,10 @@ resource "azurerm_subnet" "aks_subnet" {
 # Cluster AKS
 # ---------------------
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "${var.project}-aks-${random_string.suffix.result}"
+  name                = "${var.project}-aks"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
-  dns_prefix          = "${var.project}-${random_string.suffix.result}"
+  dns_prefix          = "${var.project}"
   kubernetes_version  = var.k8s_version != "" ? var.k8s_version : null
   sku_tier            = "Standard"
 
@@ -71,7 +65,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     vm_size                     = var.node_vm_size
     os_disk_size_gb             = 100
     type                        = "VirtualMachineScaleSets"
-    only_critical_addons_enabled = true
+    only_critical_addons_enabled = false
     node_count                  = var.node_count
     orchestrator_version        = var.k8s_version != "" ? var.k8s_version : null
     vnet_subnet_id              = azurerm_subnet.aks_subnet.id

@@ -1,57 +1,59 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: projet-eni
   name: mysql
+  labels:
+    app: mysql
+  namespace: projet-eni
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: mysql
-  template:                
+  strategy:
+    type: Recreate
+  template:
     metadata:
       labels:
         app: mysql
-    spec:                  
+    spec:
       containers:
-        - name: mysql
-          image: mysql:8
-          ports:
-            - containerPort: 3306
-          envFrom:
-            - secretRef:
-                name: todolist-secrets
-            - configMapRef:
-                name: todolist-config
-          env:
-            - name: DB_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: todolist-config
-                  key: DB_NAME
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: todolist-secrets
-                  key: DB_USER
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: todolist-secrets
-                  key: DB_PASSWORD
-            - name: DB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: todolist-secrets
-                  key: DB_ROOT_PASSWORD
-          volumeMounts:
-            - name: mysql-pv
-              mountPath: /var/lib/mysql
+      - image: mysql:8.0
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-root-password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
       volumes:
-        - name: mysql-pv
-          persistentVolumeClaim:
-            claimName: mysql-pvc
-      tolerations:           
-        - key: "CriticalAddonsOnly"
-          operator: "Exists"
-          effect: "NoSchedule"
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
