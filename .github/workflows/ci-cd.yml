@@ -123,4 +123,4 @@ jobs:
         run: |
           kubectl get pods -n projet-eni
           kubectl rollout status deployment/backend-deployment -n projet-eni --timeout=120s
-          kubectl rollout status deployment/frontend-deployment -n projet-eni --timeout=120s   
+          kubectl rollout status deployment/frontend-deployment -n projet-eni --timeout=120s
