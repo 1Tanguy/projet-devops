@@ -107,18 +107,18 @@ jobs:
         
       - name: Update backend image
         run: |
-          sed -i 's|image: 1tanguy/projet-devops:backend-.*|image: 1tanguy/projet-devops:backend-${{ needs.build-and-push.outputs.sha_short }}|' k8s/backend.yaml
+          sed -i 's|image: 1tanguy/projet-devops:backend-.*|image: 1tanguy/projet-devops:backend-${{ needs.build-and-push.outputs.sha_short }}|' k8s/backend-deployment.yaml
         
       - name: Update frontend image  
         run: |
-          sed -i 's|image: 1tanguy/projet-devops:frontend-.*|image: 1tanguy/projet-devops:frontend-${{ needs.build-and-push.outputs.sha_short }}|' k8s/frontend.yaml
+          sed -i 's|image: 1tanguy/projet-devops:frontend-.*|image: 1tanguy/projet-devops:frontend-${{ needs.build-and-push.outputs.sha_short }}|' k8s/frontend-deployment.yaml
 
       - name: Deploy backend
-        run: kubectl apply -f k8s/backend.yaml
+        run: kubectl apply -f k8s/backend-deployment.yaml
         
       - name: Deploy frontend
-        run: kubectl apply -f k8s/frontend.yaml
-        
+        run: kubectl apply -f k8s/frontend-deployment.yaml
+
       - name: Check deployment status
         run: |
           kubectl get pods -n projet-eni
