@@ -6,7 +6,7 @@ metadata:
     app: backend
   namespace: projet-eni
 spec: 
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend
@@ -47,13 +47,3 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
-        livenessProbe:
-          tcpSocket:
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          tcpSocket:
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
